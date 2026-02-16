@@ -1,8 +1,4 @@
-import { useState } from 'react';
-
 function TechnicalArchitecture() {
-  const [showDeepDive, setShowDeepDive] = useState(false);
-
   return (
     <div className="auth0-slide">
       {/* Vertical accent lines */}
