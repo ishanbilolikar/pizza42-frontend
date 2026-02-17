@@ -1,4 +1,9 @@
+import { useState } from 'react';
+import SlideModal from '../../../components/admin/SlideModal';
+
 function Passkeys() {
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+
   return (
     <div className="auth0-slide">
       {/* Vertical accent lines */}
@@ -74,35 +79,14 @@ function Passkeys() {
             </div>
           </div>
 
-          {/* Progressive Enrollment */}
-          <details style={{ marginTop: '1.5rem' }}>
-            <summary style={{ cursor: 'pointer', fontSize: '1.25rem', color: '#BBC9FF', fontWeight: 600, padding: '1rem 0' }}>
-              ▶ Progressive Enrollment Strategy
-            </summary>
-            <div className="auth0-grid-3" style={{ marginTop: '1rem' }}>
-              <div className="auth0-card">
-                <div className="auth0-card-title">Phase 1</div>
-                <div className="auth0-card-content">
-                  <p><strong>Months 1-3:</strong> Opt-in after login</p>
-                  <p style={{ marginTop: '0.5rem', opacity: 0.8 }}>Target: 20% adoption</p>
-                </div>
-              </div>
-              <div className="auth0-card">
-                <div className="auth0-card-title">Phase 2</div>
-                <div className="auth0-card-content">
-                  <p><strong>Months 4-6:</strong> Prompt power users</p>
-                  <p style={{ marginTop: '0.5rem', opacity: 0.8 }}>Target: 40% adoption</p>
-                </div>
-              </div>
-              <div className="auth0-card">
-                <div className="auth0-card-title">Phase 3</div>
-                <div className="auth0-card-content">
-                  <p><strong>Months 7-12:</strong> Default for new signups</p>
-                  <p style={{ marginTop: '0.5rem', opacity: 0.8 }}>Target: 60% adoption</p>
-                </div>
-              </div>
-            </div>
-          </details>
+          {/* Progressive Enrollment Trigger Card */}
+          <div
+            className="modal-trigger-card"
+            onClick={() => setActiveModal('enrollment')}
+            style={{ marginTop: '1.5rem' }}
+          >
+            <p>📈 View Progressive Enrollment Strategy →</p>
+          </div>
         </div>
 
         {/* Copyright text */}
@@ -110,6 +94,58 @@ function Passkeys() {
           © Okta, Inc. and/or its affiliates. All rights reserved. For Okta, Inc. internal use only.
         </div>
       </div>
+
+      {/* Progressive Enrollment Modal */}
+      <SlideModal
+        isOpen={activeModal === 'enrollment'}
+        onClose={() => setActiveModal(null)}
+        title="Progressive Enrollment Strategy"
+      >
+        <p style={{ marginBottom: '1.5rem', fontSize: '1.05rem' }}>
+          Phased rollout approach to maximize passkey adoption without forcing users
+        </p>
+
+        <div className="auth0-grid-3">
+          <div className="auth0-card">
+            <div className="auth0-card-title">Phase 1: Months 1-3</div>
+            <div className="auth0-card-content">
+              <p style={{ marginBottom: '0.75rem' }}><strong>Strategy:</strong> Opt-in after login</p>
+              <p style={{ opacity: 0.8, marginBottom: '0.5rem' }}>Show passkey enrollment prompt to interested users</p>
+              <p style={{ color: '#4CB7A3', fontWeight: 600 }}>Target: 20% adoption</p>
+            </div>
+          </div>
+
+          <div className="auth0-card">
+            <div className="auth0-card-title">Phase 2: Months 4-6</div>
+            <div className="auth0-card-content">
+              <p style={{ marginBottom: '0.75rem' }}><strong>Strategy:</strong> Prompt power users</p>
+              <p style={{ opacity: 0.8, marginBottom: '0.5rem' }}>Target users with 5+ logins per month</p>
+              <p style={{ color: '#4CB7A3', fontWeight: 600 }}>Target: 40% adoption</p>
+            </div>
+          </div>
+
+          <div className="auth0-card">
+            <div className="auth0-card-title">Phase 3: Months 7-12</div>
+            <div className="auth0-card-content">
+              <p style={{ marginBottom: '0.75rem' }}><strong>Strategy:</strong> Default for new signups</p>
+              <p style={{ opacity: 0.8, marginBottom: '0.5rem' }}>Offer passkey setup during registration flow</p>
+              <p style={{ color: '#4CB7A3', fontWeight: 600 }}>Target: 60% adoption</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="auth0-card" style={{ marginTop: '1.5rem', background: 'rgba(76, 183, 163, 0.1)' }}>
+          <div className="auth0-card-title">Key Principles</div>
+          <div className="auth0-card-content">
+            <ul className="auth0-list">
+              <li><strong>Never force:</strong> Always provide fallback to password/social login</li>
+              <li><strong>Educate:</strong> Explain benefits (faster login, more secure, no passwords)</li>
+              <li><strong>Incentivize:</strong> Offer perks like priority support or loyalty points</li>
+              <li><strong>Monitor:</strong> Track adoption rates and user feedback to adjust strategy</li>
+            </ul>
+          </div>
+        </div>
+      </SlideModal>
     </div>
   );
 }

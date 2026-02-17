@@ -64,59 +64,6 @@ function LandingPage({ onLoginClick }: LandingPageProps) {
           </div>
         </div>
 
-        {/* Stakeholder Benefits Section */}
-        <section style={{ marginBottom: '3rem' }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '1.5rem',
-            maxWidth: '900px',
-            margin: '0 auto'
-          }}>
-            {/* Security Card */}
-            <div style={{
-              background: 'white',
-              borderRadius: '0.75rem',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              padding: '2rem',
-              textAlign: 'center',
-              transition: 'transform 0.2s',
-            }} className="benefit-card">
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔐</div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.5rem' }}>Secure</h3>
-              <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Bank-level encryption for your account with enterprise-grade security</p>
-            </div>
-
-            {/* Convenience Card */}
-            <div style={{
-              background: 'white',
-              borderRadius: '0.75rem',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              padding: '2rem',
-              textAlign: 'center',
-              transition: 'transform 0.2s',
-            }} className="benefit-card">
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚡</div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.5rem' }}>Fast</h3>
-              <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Frictionless login with social accounts and passkeys</p>
-            </div>
-
-            {/* Rewards Card */}
-            <div style={{
-              background: 'white',
-              borderRadius: '0.75rem',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              padding: '2rem',
-              textAlign: 'center',
-              transition: 'transform 0.2s',
-            }} className="benefit-card">
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎁</div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.5rem' }}>Smart</h3>
-              <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Profile enrichment and personalized offers based on your favorites</p>
-            </div>
-          </div>
-        </section>
-
         {/* Pizza Menu */}
         <section className="menu-section">
           <h2>Our Menu</h2>

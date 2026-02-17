@@ -9,6 +9,8 @@ import EmailVerification from './admin/slides/EmailVerification';
 import Passkeys from './admin/slides/Passkeys';
 import Marketing from './admin/slides/Marketing';
 import DayTwoOps from './admin/slides/DayTwoOps';
+import ImplementationJourney from './admin/slides/ImplementationJourney';
+import LearningsProduction from './admin/slides/LearningsProduction';
 
 const slides = [
   { component: BusinessProblem, title: 'Business Problem' },
@@ -16,7 +18,9 @@ const slides = [
   { component: EmailVerification, title: 'Email Verification' },
   { component: Passkeys, title: 'Passkeys & Social Login' },
   { component: Marketing, title: 'Marketing Data Engine' },
-  { component: DayTwoOps, title: 'Day 2 Operations' }
+  { component: DayTwoOps, title: 'Day 2 Operations' },
+  { component: ImplementationJourney, title: 'Implementation Journey' },
+  { component: LearningsProduction, title: 'Learnings & Production' }
 ];
 
 function PresentationMode() {

@@ -1,4 +1,9 @@
+import { useState } from 'react';
+import SlideModal from '../../../components/admin/SlideModal';
+
 function Marketing() {
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+
   return (
     <div className="auth0-slide">
       {/* Vertical accent lines */}
@@ -97,35 +102,13 @@ function Marketing() {
             </p>
           </div>
 
-          {/* Identity Stitching */}
-          <details style={{ marginTop: '1.5rem' }}>
-            <summary style={{ cursor: 'pointer', fontSize: '1.25rem', color: '#BBC9FF', fontWeight: 600, padding: '1rem 0' }}>
-              ▶ Identity Stitching: Unifying Cross-Platform Users
-            </summary>
-            <div className="auth0-grid-2" style={{ marginTop: '1rem' }}>
-              <div className="auth0-card" style={{ borderColor: '#E27133' }}>
-                <div className="auth0-card-title">❌ Before Auth0</div>
-                <div className="auth0-card-content">
-                  <p style={{ marginBottom: '0.5rem' }}>Web signup: sarah@example.com (ID: 123)</p>
-                  <p style={{ marginBottom: '1rem' }}>Mobile: Google Sign-In (ID: 456)</p>
-                  <p style={{ color: '#E27133', fontWeight: 600 }}>Marketing sees: 2 separate customers</p>
-                </div>
-              </div>
-
-              <div className="auth0-card" style={{ borderColor: '#4CB7A3', background: 'rgba(76, 183, 163, 0.05)' }}>
-                <div className="auth0-card-title">✅ After Auth0 Account Linking</div>
-                <div className="auth0-card-content">
-                  <p style={{ marginBottom: '1rem' }}>Both accounts linked to sarah@example.com</p>
-                  <ul className="auth0-list">
-                    <li style={{ color: '#4CB7A3' }}>Single loyalty point balance</li>
-                    <li style={{ color: '#4CB7A3' }}>Unified order history</li>
-                    <li style={{ color: '#4CB7A3' }}>Cross-device passkeys</li>
-                  </ul>
-                  <p style={{ color: '#4CB7A3', fontWeight: 600, marginTop: '1rem' }}>Marketing sees: 1 customer, 2 login methods</p>
-                </div>
-              </div>
-            </div>
-          </details>
+          {/* Account Linking Trigger Card */}
+          <div
+            className="modal-trigger-card"
+            onClick={() => setActiveModal('account-linking')}
+          >
+            <p>🔗 View Account Linking Details: Unified Customer Identity →</p>
+          </div>
 
           {/* Marketing Advantage */}
           <div className="auth0-highlight" style={{ background: 'linear-gradient(135deg, rgba(61, 16, 166, 0.2) 0%, rgba(63, 89, 228, 0.2) 100%)', borderLeft: '4px solid #3F59E4', marginTop: '2rem' }}>
@@ -144,6 +127,60 @@ function Marketing() {
           © Okta, Inc. and/or its affiliates. All rights reserved. For Okta, Inc. internal use only.
         </div>
       </div>
+
+      {/* Account Linking Modal */}
+      <SlideModal
+        isOpen={activeModal === 'account-linking'}
+        onClose={() => setActiveModal(null)}
+        title="Account Linking: Unified Customer Identity"
+      >
+        <div className="auth0-grid-2" style={{ marginBottom: '2rem' }}>
+          <div className="auth0-card" style={{ borderColor: '#E27133', background: 'rgba(226, 113, 51, 0.05)' }}>
+            <div className="auth0-card-title">❌ Without Account Linking</div>
+            <div className="auth0-card-content">
+              <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem' }}>Sarah creates two accounts:</p>
+              <div style={{ marginBottom: '0.5rem' }}>
+                <code style={{ fontSize: '0.85rem', color: '#E27133' }}>auth0|user123</code>
+                <p style={{ fontSize: '0.85rem', opacity: 0.8 }}>Web signup via email/password</p>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <code style={{ fontSize: '0.85rem', color: '#E27133' }}>google-oauth2|456</code>
+                <p style={{ fontSize: '0.85rem', opacity: 0.8 }}>Mobile login via Google</p>
+              </div>
+              <p style={{ color: '#E27133', fontWeight: 600 }}>Result: 2 profiles, split loyalty points, fragmented data</p>
+            </div>
+          </div>
+
+          <div className="auth0-card" style={{ borderColor: '#4CB7A3', background: 'rgba(76, 183, 163, 0.05)' }}>
+            <div className="auth0-card-title">✅ With Auth0 Account Linking</div>
+            <div className="auth0-card-content">
+              <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem' }}>Primary account (auto-detected):</p>
+              <div style={{ marginBottom: '1rem' }}>
+                <code style={{ fontSize: '0.85rem', color: '#4CB7A3' }}>auth0|user123</code>
+                <p style={{ fontSize: '0.85rem', opacity: 0.8 }}>Linked identities: [email, Google]</p>
+              </div>
+              <ul className="auth0-list" style={{ fontSize: '0.9rem' }}>
+                <li style={{ color: '#4CB7A3' }}>Single user ID across all logins</li>
+                <li style={{ color: '#4CB7A3' }}>Merged loyalty points & order history</li>
+                <li style={{ color: '#4CB7A3' }}>User chooses login method each time</li>
+              </ul>
+              <p style={{ color: '#4CB7A3', fontWeight: 600, marginTop: '1rem' }}>Result: 1 customer, 2 login options</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="auth0-card" style={{ background: 'rgba(0, 0, 0, 0.2)' }}>
+          <div className="auth0-card-title">⚙️ Implementation</div>
+          <div className="auth0-card-content">
+            <p style={{ fontSize: '0.95rem', marginBottom: '0.75rem' }}>
+              <strong>Automatic Linking:</strong> When email matches, Auth0 can automatically link accounts
+            </p>
+            <p style={{ fontSize: '0.95rem' }}>
+              <strong>Manual Linking:</strong> Users prompted: "Link your Google account to your existing Pizza42 profile?"
+            </p>
+          </div>
+        </div>
+      </SlideModal>
     </div>
   );
 }
