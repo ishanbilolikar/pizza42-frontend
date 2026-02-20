@@ -11,7 +11,7 @@ interface Order {
 }
 
 function Profile() {
-  const { user, isLoading, getAccessTokenSilently } = useAuth0();
+  const { user, isLoading, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
   const navigate = useNavigate();
   const [showDataLoading, setShowDataLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -24,6 +24,22 @@ function Profile() {
       // Data loading screen will handle its own timing
     }
   }, [isLoading, user]);
+
+  // Refresh token claims when component loads to ensure latest data
+  useEffect(() => {
+    const refreshClaims = async () => {
+      if (dataLoaded && user) {
+        try {
+          // Silently refresh ID token to get latest claims (totalOrders, lastOrderDate)
+          await getIdTokenClaims({ cacheMode: 'off' });
+          console.log('✅ Profile: Refreshed token claims');
+        } catch (error) {
+          console.error('Failed to refresh claims:', error);
+        }
+      }
+    };
+    refreshClaims();
+  }, [dataLoaded]);
 
   // Fetch orders after data loading completes
   useEffect(() => {

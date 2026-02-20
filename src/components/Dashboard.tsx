@@ -35,7 +35,7 @@ const pizzas = [
 ];
 
 function Dashboard() {
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
   const [orderStatus, setOrderStatus] = useState<string | null>(null);
   const [isOrdering, setIsOrdering] = useState(false);
   const [showAuthBanner, setShowAuthBanner] = useState(true);
@@ -92,13 +92,22 @@ function Dashboard() {
         // Silently refresh the token to get updated user profile with new order data
         console.log('🔄 Refreshing token to get updated order data...');
         try {
-          await getAccessTokenSilently({
-            authorizationParams: {
-              audience: 'https://pizza42-api',
-            },
-            cacheMode: 'off' // Force fresh token from Auth0
-          });
+          // Refresh both access token and ID token claims
+          await Promise.all([
+            getAccessTokenSilently({
+              authorizationParams: {
+                audience: 'https://pizza42-api',
+              },
+              cacheMode: 'off' // Force fresh token from Auth0
+            }),
+            getIdTokenClaims({
+              cacheMode: 'off' // Force fresh ID token to update user object
+            })
+          ]);
           console.log('✅ Token refreshed successfully with updated order data');
+
+          // Force a small delay to ensure SDK updates the user object
+          await new Promise(resolve => setTimeout(resolve, 100));
         } catch (refreshError) {
           console.error('Failed to refresh token:', refreshError);
           // Don't show error to user - order was successful, token refresh is optional
