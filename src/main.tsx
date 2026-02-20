@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')!).render(
         authorizationParams={{
           redirect_uri: window.location.origin,
           audience: 'https://pizza42-api',
-          scope: 'openid profile email place:order'
+          scope: 'openid profile email place:order offline_access'
         }}
         useRefreshTokens={true}
         cacheLocation="localstorage"

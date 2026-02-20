@@ -30,6 +30,7 @@ function Profile() {
   // Orders are the source of truth for totalOrders and lastOrderDate
   useEffect(() => {
     if (dataLoaded && user) {
+      console.log('📋 Profile page: Fetching orders from Management API...');
       fetchOrders();
     }
   }, [dataLoaded, user]);
@@ -53,17 +54,20 @@ function Profile() {
         const fetchedOrders = data.orders || [];
         setOrders(fetchedOrders);
 
-        // Calculate fresh order data from the actual orders (source of truth)
-        if (fetchedOrders.length > 0) {
-          setFreshUserData({
-            totalOrders: fetchedOrders.length,
-            lastOrderDate: fetchedOrders[0]?.timestamp // Orders are sorted by most recent first
-          });
-          console.log('✅ Fresh order data calculated:', {
-            totalOrders: fetchedOrders.length,
-            lastOrderDate: fetchedOrders[0]?.timestamp
-          });
-        }
+        // Always calculate fresh order data from the actual orders (source of truth)
+        // Even if there are 0 orders, we want to show 0, not fall back to stale token data
+        setFreshUserData({
+          totalOrders: fetchedOrders.length,
+          lastOrderDate: fetchedOrders.length > 0 ? fetchedOrders[0]?.timestamp : undefined
+        });
+
+        console.log('✅ Fresh order data fetched from Management API:', {
+          totalOrders: fetchedOrders.length,
+          lastOrderDate: fetchedOrders.length > 0 ? fetchedOrders[0]?.timestamp : 'none',
+          ordersInResponse: fetchedOrders.length
+        });
+      } else {
+        console.error('Failed to fetch orders:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Failed to fetch orders:', error);
@@ -131,6 +135,11 @@ function Profile() {
           {/* Order Summary */}
           <div className="profile-card">
             <h3>Order Summary</h3>
+            {freshUserData && (
+              <p style={{ fontSize: '0.85rem', color: '#10b981', marginBottom: '0.5rem' }}>
+                ✓ Live data from Management API
+              </p>
+            )}
             <div className="order-stats">
               <div className="stat-item">
                 <div className="stat-icon">📦</div>
