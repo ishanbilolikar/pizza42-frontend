@@ -6,9 +6,10 @@ interface EmailVerificationPromptProps {
 }
 
 function EmailVerificationPrompt({ onDismiss }: EmailVerificationPromptProps) {
-  const { user } = useAuth0();
+  const { user, getIdTokenClaims } = useAuth0();
   const [isResending, setIsResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleResendEmail = async () => {
     setIsResending(true);
@@ -23,6 +24,35 @@ function EmailVerificationPrompt({ onDismiss }: EmailVerificationPromptProps) {
     setTimeout(() => {
       setResendSuccess(false);
     }, 3000);
+  };
+
+  const handleRefreshVerification = async () => {
+    setIsRefreshing(true);
+    try {
+      // Get fresh ID token claims from Auth0
+      const freshClaims = await getIdTokenClaims();
+
+      console.log('Checking email verification status:', {
+        email: freshClaims?.email,
+        email_verified: freshClaims?.email_verified
+      });
+
+      if (freshClaims?.email_verified) {
+        // Email is verified! Close the modal
+        console.log('✅ Email verified! Closing modal...');
+        onDismiss();
+        // Reload page to refresh user object
+        window.location.reload();
+      } else {
+        // Still not verified
+        alert('Email not verified yet. Please check your inbox and click the verification link.');
+      }
+    } catch (error) {
+      console.error('Failed to check verification status:', error);
+      alert('Failed to check verification status. Please try again.');
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   return (
@@ -68,7 +98,13 @@ function EmailVerificationPrompt({ onDismiss }: EmailVerificationPromptProps) {
 
         {/* Additional Info */}
         <p className="verification-footer">
-          Already verified? <button onClick={() => window.location.reload()} className="link-button">Refresh page</button>
+          Already verified? <button
+            onClick={handleRefreshVerification}
+            disabled={isRefreshing}
+            className="link-button"
+          >
+            {isRefreshing ? 'Checking...' : 'Refresh page'}
+          </button>
         </p>
       </div>
     </div>
