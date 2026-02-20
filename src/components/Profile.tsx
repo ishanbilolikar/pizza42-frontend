@@ -135,11 +135,6 @@ function Profile() {
           {/* Order Summary */}
           <div className="profile-card">
             <h3>Order Summary</h3>
-            {freshUserData && (
-              <p style={{ fontSize: '0.85rem', color: '#10b981', marginBottom: '0.5rem' }}>
-                ✓ Live data from Management API
-              </p>
-            )}
             <div className="order-stats">
               <div className="stat-item">
                 <div className="stat-icon">📦</div>
