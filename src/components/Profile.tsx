@@ -30,8 +30,17 @@ function Profile() {
     const refreshClaims = async () => {
       if (dataLoaded && user) {
         try {
-          // Silently refresh ID token to get latest claims (totalOrders, lastOrderDate)
-          await getIdTokenClaims({ cacheMode: 'off' });
+          // Silently refresh access token which also refreshes ID token claims
+          await getAccessTokenSilently({
+            authorizationParams: {
+              audience: 'https://pizza42-api',
+            },
+            cacheMode: 'off' // Force fresh token from Auth0
+          });
+
+          // Get the fresh ID token claims to update user object
+          await getIdTokenClaims();
+
           console.log('✅ Profile: Refreshed token claims');
         } catch (error) {
           console.error('Failed to refresh claims:', error);

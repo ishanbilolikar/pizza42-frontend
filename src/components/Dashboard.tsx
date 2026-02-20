@@ -92,18 +92,17 @@ function Dashboard() {
         // Silently refresh the token to get updated user profile with new order data
         console.log('🔄 Refreshing token to get updated order data...');
         try {
-          // Refresh both access token and ID token claims
-          await Promise.all([
-            getAccessTokenSilently({
-              authorizationParams: {
-                audience: 'https://pizza42-api',
-              },
-              cacheMode: 'off' // Force fresh token from Auth0
-            }),
-            getIdTokenClaims({
-              cacheMode: 'off' // Force fresh ID token to update user object
-            })
-          ]);
+          // Refresh access token with cacheMode: 'off' which also refreshes ID token
+          await getAccessTokenSilently({
+            authorizationParams: {
+              audience: 'https://pizza42-api',
+            },
+            cacheMode: 'off' // Force fresh token from Auth0, also refreshes ID token claims
+          });
+
+          // Get the fresh ID token claims to update user object
+          await getIdTokenClaims();
+
           console.log('✅ Token refreshed successfully with updated order data');
 
           // Force a small delay to ensure SDK updates the user object
