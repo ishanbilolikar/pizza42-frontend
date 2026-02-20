@@ -11,12 +11,13 @@ interface Order {
 }
 
 function Profile() {
-  const { user, isLoading, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
+  const { user, isLoading, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [showDataLoading, setShowDataLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersExpanded, setOrdersExpanded] = useState(false);
+  const [freshUserData, setFreshUserData] = useState<{totalOrders?: number, lastOrderDate?: string} | null>(null);
 
   // Show data loading screen on first load
   useEffect(() => {
@@ -25,32 +26,8 @@ function Profile() {
     }
   }, [isLoading, user]);
 
-  // Refresh token claims when component loads to ensure latest data
-  useEffect(() => {
-    const refreshClaims = async () => {
-      if (dataLoaded && user) {
-        try {
-          // Silently refresh access token which also refreshes ID token claims
-          await getAccessTokenSilently({
-            authorizationParams: {
-              audience: 'https://pizza42-api',
-            },
-            cacheMode: 'off' // Force fresh token from Auth0
-          });
-
-          // Get the fresh ID token claims to update user object
-          await getIdTokenClaims();
-
-          console.log('✅ Profile: Refreshed token claims');
-        } catch (error) {
-          console.error('Failed to refresh claims:', error);
-        }
-      }
-    };
-    refreshClaims();
-  }, [dataLoaded]);
-
   // Fetch orders after data loading completes
+  // Orders are the source of truth for totalOrders and lastOrderDate
   useEffect(() => {
     if (dataLoaded && user) {
       fetchOrders();
@@ -73,7 +50,20 @@ function Profile() {
 
       if (response.ok) {
         const data = await response.json();
-        setOrders(data.orders || []);
+        const fetchedOrders = data.orders || [];
+        setOrders(fetchedOrders);
+
+        // Calculate fresh order data from the actual orders (source of truth)
+        if (fetchedOrders.length > 0) {
+          setFreshUserData({
+            totalOrders: fetchedOrders.length,
+            lastOrderDate: fetchedOrders[0]?.timestamp // Orders are sorted by most recent first
+          });
+          console.log('✅ Fresh order data calculated:', {
+            totalOrders: fetchedOrders.length,
+            lastOrderDate: fetchedOrders[0]?.timestamp
+          });
+        }
       }
     } catch (error) {
       console.error('Failed to fetch orders:', error);
@@ -145,16 +135,18 @@ function Profile() {
               <div className="stat-item">
                 <div className="stat-icon">📦</div>
                 <div className="stat-info">
-                  <div className="stat-value">{user.totalOrders || 0}</div>
+                  <div className="stat-value">
+                    {freshUserData?.totalOrders ?? user.totalOrders ?? 0}
+                  </div>
                   <div className="stat-label">Total Orders</div>
                 </div>
               </div>
-              {user.lastOrderDate && (
+              {(freshUserData?.lastOrderDate || user.lastOrderDate) && (
                 <div className="stat-item">
                   <div className="stat-icon">📅</div>
                   <div className="stat-info">
                     <div className="stat-value">
-                      {new Date(user.lastOrderDate).toLocaleDateString()}
+                      {new Date(freshUserData?.lastOrderDate || user.lastOrderDate).toLocaleDateString()}
                     </div>
                     <div className="stat-label">Last Order</div>
                   </div>

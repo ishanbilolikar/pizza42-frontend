@@ -35,7 +35,7 @@ const pizzas = [
 ];
 
 function Dashboard() {
-  const { user, getAccessTokenSilently, getIdTokenClaims } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [orderStatus, setOrderStatus] = useState<string | null>(null);
   const [isOrdering, setIsOrdering] = useState(false);
   const [showAuthBanner, setShowAuthBanner] = useState(true);
@@ -88,29 +88,10 @@ function Dashboard() {
 
       if (response.ok) {
         setOrderStatus(`✅ Order placed successfully! Order ID: ${data.orderId}`);
+        console.log('✅ Order placed successfully - visit Profile to see updated order count');
 
-        // Silently refresh the token to get updated user profile with new order data
-        console.log('🔄 Refreshing token to get updated order data...');
-        try {
-          // Refresh access token with cacheMode: 'off' which also refreshes ID token
-          await getAccessTokenSilently({
-            authorizationParams: {
-              audience: 'https://pizza42-api',
-            },
-            cacheMode: 'off' // Force fresh token from Auth0, also refreshes ID token claims
-          });
-
-          // Get the fresh ID token claims to update user object
-          await getIdTokenClaims();
-
-          console.log('✅ Token refreshed successfully with updated order data');
-
-          // Force a small delay to ensure SDK updates the user object
-          await new Promise(resolve => setTimeout(resolve, 100));
-        } catch (refreshError) {
-          console.error('Failed to refresh token:', refreshError);
-          // Don't show error to user - order was successful, token refresh is optional
-        }
+        // Note: Order count will update when you visit Profile page
+        // Profile fetches orders from Management API which is the source of truth
       } else {
         // Display the error message from the API
         setOrderStatus(`❌ ${data.error || 'Failed to place order'}`);
