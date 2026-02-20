@@ -94,15 +94,13 @@ function Header({ onProfileClick, onLoginClick }: HeaderProps) {
                 >
                   Profile
                 </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => navigate('/admin')}
-                    className="btn btn-link"
-                    style={{ color: '#f59e0b', fontWeight: 600 }}
-                  >
-                    👑 Admin
-                  </button>
-                )}
+                <button
+                  onClick={() => navigate('/admin')}
+                  className="btn btn-link"
+                  style={{ color: isAdmin ? '#f59e0b' : '#9ca3af', fontWeight: 600 }}
+                >
+                  👑 Admin
+                </button>
                 <button
                   onClick={handleProfileClick}
                   className="btn btn-icon"
