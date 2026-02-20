@@ -6,7 +6,7 @@ interface EmailVerificationPromptProps {
 }
 
 function EmailVerificationPrompt({ onDismiss }: EmailVerificationPromptProps) {
-  const { user, getIdTokenClaims } = useAuth0();
+  const { user, loginWithRedirect } = useAuth0();
   const [isResending, setIsResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -29,29 +29,23 @@ function EmailVerificationPrompt({ onDismiss }: EmailVerificationPromptProps) {
   const handleRefreshVerification = async () => {
     setIsRefreshing(true);
     try {
-      // Get fresh ID token claims from Auth0
-      const freshClaims = await getIdTokenClaims();
+      // Silent re-authentication to get fresh tokens with updated email_verified status
+      // prompt: 'none' means it won't show login screen if session exists
+      console.log('🔄 Triggering silent re-authentication to check email verification...');
 
-      console.log('Checking email verification status:', {
-        email: freshClaims?.email,
-        email_verified: freshClaims?.email_verified
+      await loginWithRedirect({
+        authorizationParams: {
+          prompt: 'none', // Silent authentication - no UI if session exists
+          redirect_uri: window.location.origin
+        }
       });
 
-      if (freshClaims?.email_verified) {
-        // Email is verified! Close the modal
-        console.log('✅ Email verified! Closing modal...');
-        onDismiss();
-        // Reload page to refresh user object
-        window.location.reload();
-      } else {
-        // Still not verified
-        alert('Email not verified yet. Please check your inbox and click the verification link.');
-      }
+      // If we reach here, re-authentication is in progress
+      // User will be redirected back with fresh tokens
     } catch (error) {
-      console.error('Failed to check verification status:', error);
-      alert('Failed to check verification status. Please try again.');
-    } finally {
+      console.error('Failed to refresh authentication:', error);
       setIsRefreshing(false);
+      alert('Failed to check verification status. Please try logging out and back in.');
     }
   };
 
